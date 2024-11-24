@@ -39,4 +39,9 @@ sealed class Expression {
     data class Number(val value: Int) : Expression()
 
     data class Variable(val name: String) : Expression()
+
+    fun eval(variable_map : Map<String,Int>): Int? = when (this) {
+        is Number -> value
+        is Variable -> variable_map[name]
+    }
 }
