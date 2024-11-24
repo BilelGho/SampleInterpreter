@@ -16,7 +16,7 @@ class InterpreterTest {
     @Test
     fun printCommandPrintsVariableValue() {
         val interpreter = Interpreter()
-        interpreter.current_variable_map["x"] = 10
+        interpreter.current_variable_map = interpreter.current_variable_map.put("x", 10)
         val command = Command.Print("x")
         val result = interpreter.runCommand(command)
         assertEquals(Optional.of("10"), result)
@@ -25,7 +25,7 @@ class InterpreterTest {
     @Test
     fun openScopeCommandPushesCurrentVariableMap() {
         val interpreter = Interpreter()
-        interpreter.current_variable_map["x"] = 10
+        interpreter.current_variable_map = interpreter.current_variable_map.put("x", 10)
         val command = Command.OpenScope
         interpreter.runCommand(command)
         assertTrue(interpreter.variable_maps.isNotEmpty())
@@ -35,9 +35,9 @@ class InterpreterTest {
     @Test
     fun closeScopeCommandPopsVariableMap() {
         val interpreter = Interpreter()
-        interpreter.current_variable_map["x"] = 10
+        interpreter.current_variable_map = interpreter.current_variable_map.put("x", 10)
         interpreter.runCommand(Command.OpenScope)
-        interpreter.current_variable_map["x"] = 20
+        interpreter.current_variable_map = interpreter.current_variable_map.put("x", 10)
         interpreter.runCommand(Command.CloseScope)
         assertEquals(10, interpreter.current_variable_map["x"])
     }
