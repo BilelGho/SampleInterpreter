@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
 }
 
 fun runREPL(interpreter: Interpreter) {
-    println("Enter your program (end with an empty line):")
+    println("Enter your program (end with an empty line), type  \":exit\" to exit REPL:")
     val reader = System.`in`.bufferedReader()
     var exit = false
 

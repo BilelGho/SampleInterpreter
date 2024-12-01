@@ -1,13 +1,13 @@
 import Command.CloseScope.parseProgram
 import org.example.runREPL
 import org.junit.jupiter.api.Assertions.assertLinesMatch
+import org.junit.jupiter.api.assertThrows
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 import kotlin.test.Test
 import kotlin.test.assertEquals
-
 
 class MainTest {
     val TEST_PROGRAM =
@@ -65,10 +65,51 @@ class MainTest {
         System.setOut(PrintStream(outputStream))
         runREPL(interpreter)
         val expectedOutput = """
-            Enter your program (end with an empty line):
+            Enter your program (end with an empty line), type  ":exit" to exit REPL:
             >>> 1
             2
             1
+            """.trimIndent()
+        assertLinesMatch(expectedOutput.lines(), outputStream.toString().trim().lines())
+    }
+
+    @Test
+    fun runREPLWithInvalidCommand() {
+        val interpreter = Interpreter()
+        val input = """
+            x = 1
+            print x
+            invalid command
+            :exit
+        """.trimIndent()
+        val inputStream = ByteArrayInputStream(input.toByteArray())
+        System.setIn(inputStream)
+        val outputStream = ByteArrayOutputStream()
+        System.setOut(PrintStream(outputStream))
+       assertThrows<IllegalArgumentException> {
+            runREPL(interpreter)
+        }
+    }
+
+    @Test
+    fun runREPLWithEmptyLines() {
+        val interpreter = Interpreter()
+        val input = """
+            x = 1
+            
+            print x
+            
+            :exit
+        """.trimIndent()
+        val inputStream = ByteArrayInputStream(input.toByteArray())
+        System.setIn(inputStream)
+        val outputStream = ByteArrayOutputStream()
+        System.setOut(PrintStream(outputStream))
+        runREPL(interpreter)
+        val expectedOutput = """
+            Enter your program (end with an empty line), type  ":exit" to exit REPL:
+            >>> >>> 1
+            >>>
             """.trimIndent()
         assertLinesMatch(expectedOutput.lines(), outputStream.toString().trim().lines())
     }
